@@ -51,33 +51,12 @@ public class Tests {
 
 		String contentAsString = result.getResponse().getContentAsString();
 		return mapper.readValue(contentAsString, responseClass);
-
 	}
 
-//	@Test
-//	public void saveEmployee() throws JsonProcessingException, Exception {
-//		AppUser menu = new AppUser("111", "ba", "ba", "", "EMPLOYEE");
-//		String json = mapper.writeValueAsString(menu);
-//		mockMvc.perform(MockMvcRequestBuilders.post("/createUser").content(json).contentType(MediaType.APPLICATION_JSON)
-//				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-//				.andExpect(MockMvcResultMatchers.jsonPath("$.userid").exists());
-//	}
-//
-//	// save employee negative test case
-//	@Test
-//	public void saveEmployeeNeg() throws JsonProcessingException, Exception {
-//		AppUser menu = new AppUser("111", "yam", "yam", "", "EMPLOYEE");
-//		String json = mapper.writeValueAsString(menu);
-//		mockMvc.perform(MockMvcRequestBuilders.post("/createUser").content(json).contentType(MediaType.APPLICATION_JSON)
-//				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-//				.andExpect(MockMvcResultMatchers.jsonPath("$.userid1").doesNotExist());
-//
-//	}
-//
 	@Test
 	public void login() throws JsonProcessingException, Exception {
-		AppUser menu = new AppUser("EMPLOYEE101", "emp", "emp", "", "EMPLOYEE");
-		String json = mapper.writeValueAsString(menu);
+		AppUser appUser = new AppUser("EMPLOYEE101", "emp", "emp", "", "EMPLOYEE");
+		String json = mapper.writeValueAsString(appUser);
 		MvcResult andReturn = mockMvc
 				.perform(MockMvcRequestBuilders.post("/login").content(json).contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
@@ -86,30 +65,9 @@ public class Tests {
 		AppUser response = parseResponse(andReturn, AppUser.class);
 		token = response.getAuthToken();
 	}
-//
-//	// check if token is wrong the login should not proceed
-//	@Test
-//	public void login2() throws JsonProcessingException, Exception {
-//		AppUser menu = new AppUser("EMPLOYEE101", "emp", "emp", "", "EMPLOYEE");
-//		String json = mapper.writeValueAsString(menu);
-//		MvcResult andReturn = mockMvc
-//				.perform(MockMvcRequestBuilders.post("/login").content(json).contentType(MediaType.APPLICATION_JSON)
-//						.accept(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.authToken2").doesNotExist())
-//				.andReturn();
-//	}
-//
-////before find the method is checked here	
-//	@Test
-//	public void getOneEmployees() throws JsonProcessingException, Exception {
-//		System.err.println(token);
-//		mockMvc.perform(MockMvcRequestBuilders.post("/find").header("Authorization", "Bearer " + token)
-//				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isMethodNotAllowed());
-//	}
 
-	// without token cannot get the details
 	@Test
-	public void getOneEmployees1() throws JsonProcessingException, Exception {
+	public void getOneEmployee() throws JsonProcessingException, Exception {
 		System.err.println(token);
 		mockMvc.perform(MockMvcRequestBuilders.post("/find").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError());
