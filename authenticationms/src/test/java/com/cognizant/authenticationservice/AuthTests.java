@@ -46,7 +46,7 @@ public class AuthTests {
 	// it execute before all methods
 	public void setUp() throws JsonProcessingException, Exception {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wc).build();
-		login();
+		validLogin();
 	}
 
 	public static <T> T parseResponse(MvcResult result, Class<T> responseClass)
@@ -57,7 +57,7 @@ public class AuthTests {
 
 	}
 
-	// save employee mapping is tested
+	// test : save employee mapping is tested
 	@Test
 	public void saveEmployee() throws JsonProcessingException, Exception {
 		AppUser menu = new AppUser("111", "ba", "ba", "", "EMPLOYEE");
@@ -67,7 +67,7 @@ public class AuthTests {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.userid").exists());
 	}
 
-	// save employee negative test case
+	// test : save employee based on user id
 	@Test
 	public void saveEmployeeNeg() throws JsonProcessingException, Exception {
 		AppUser menu = new AppUser("111", "yam", "yam", "", "EMPLOYEE");
@@ -78,12 +78,11 @@ public class AuthTests {
 
 	}
 
-	// login method is tested
-
+	// test : valid Login with token
 	@Test
-	public void login() throws JsonProcessingException, Exception {
-		AppUser menu = new AppUser("EMPLOYEE101", "emp", "emp", "", "EMPLOYEE");
-		String json = mapper.writeValueAsString(menu);
+	public void validLogin() throws JsonProcessingException, Exception {
+		AppUser appUser = new AppUser("EMPLOYEE101", "emp", "emp", "", "EMPLOYEE");
+		String json = mapper.writeValueAsString(appUser);
 		MvcResult andReturn = mockMvc
 				.perform(MockMvcRequestBuilders.post("/login").content(json).contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
@@ -93,38 +92,38 @@ public class AuthTests {
 		token = response.getAuthToken();
 	}
 
-	// check if token is wrong the login should not proceed
+	// test: checks if invalid login(wrong token) proceeds or not
 	@Test
-	public void login2() throws JsonProcessingException, Exception {
-		AppUser menu = new AppUser("EMPLOYEE101", "emp", "emp", "", "EMPLOYEE");
-		String json = mapper.writeValueAsString(menu);
+	public void invaidLogin() throws JsonProcessingException, Exception {
+		AppUser appUser = new AppUser("EMPLOYEE101", "emp", "emp", "", "EMPLOYEE");
+		String json = mapper.writeValueAsString(appUser);
 		MvcResult andReturn = mockMvc
 				.perform(MockMvcRequestBuilders.post("/login").content(json).contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().is2xxSuccessful()).andExpect(MockMvcResultMatchers.jsonPath("$.authToken2").doesNotExist())
-				.andReturn();
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.authToken2").doesNotExist()).andReturn();
 	}
 
-//before find the method is checked here	
+	// test : get Employee based on token
 	@Test
-	public void getOneEmployees() throws JsonProcessingException, Exception {
+	public void getOneEmployee() throws JsonProcessingException, Exception {
 		System.err.println(token);
 		mockMvc.perform(MockMvcRequestBuilders.post("/find").header("Authorization", "Bearer " + token)
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isMethodNotAllowed());
 	}
 
-	// without token cannot get the details
+	// test : get Employee based on no token
 	@Test
-	public void getOneEmployees1() throws JsonProcessingException, Exception {
+	public void getOneEmployee1() throws JsonProcessingException, Exception {
 		System.err.println(token);
 		mockMvc.perform(MockMvcRequestBuilders.post("/find").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isMethodNotAllowed());
 
 	}
 
-	// check the health of microservice
+	// health check :: UP
 	@Test
-	public void geHealth() throws JsonProcessingException, Exception {
+	public void getHealthUp() throws JsonProcessingException, Exception {
 		System.err.println(token);
 		MvcResult andReturn = mockMvc.perform(MockMvcRequestBuilders.get("/health").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -134,8 +133,9 @@ public class AuthTests {
 
 	}
 
+	// health check :: DOWN
 	@Test
-	public void geHealthNeg() throws JsonProcessingException, Exception {
+	public void getHealthDown() throws JsonProcessingException, Exception {
 		System.err.println(token);
 		MvcResult andReturn = mockMvc.perform(MockMvcRequestBuilders.get("/health").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -145,8 +145,9 @@ public class AuthTests {
 
 	}
 
+	// valid token check
 	@Test
-	public void geValidate() throws JsonProcessingException, Exception {
+	public void getValidate() throws JsonProcessingException, Exception {
 		System.err.println(token);
 		mockMvc.perform(MockMvcRequestBuilders.get("/validateToken").header("Authorization", "Bearer " + token)
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
@@ -154,24 +155,23 @@ public class AuthTests {
 	}
 
 	@Test
-	public void getNotValidate() throws JsonProcessingException, Exception {
+	public void getInvalidate() throws JsonProcessingException, Exception {
 		System.err.println(token);
 		mockMvc.perform(MockMvcRequestBuilders.get("/validateToken").header("Authorization", token)
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 
 	}
 
-//	
 	@Test
 	public void setterNameTest() throws NoSuchFieldException, IllegalAccessException {
 		// given
 		AppUser pojo = new AppUser();
 		// when
-		pojo.setUsername("nagarjun");
+		pojo.setUsername("CUST101");
 		// then
 		java.lang.reflect.Field field = pojo.getClass().getDeclaredField("username");
 		field.setAccessible(true);
-		assertEquals("Fields didn't match", field.get(pojo), "nagarjun");
+		assertEquals("Fields didn't match", field.get(pojo), "CUST101");
 	}
 
 	@Test
@@ -179,14 +179,13 @@ public class AuthTests {
 		// given
 		AppUser pojo = new AppUser();
 		// when
-		pojo.setUsername("abcd");
+		pojo.setUsername("CUST102");
 		// then
 		java.lang.reflect.Field field = pojo.getClass().getDeclaredField("username");
 		field.setAccessible(true);
-		assertNotEquals("Fields didn't match", field.get(pojo), "abc");
+		assertNotEquals("Fields didn't match", field.get(pojo), "CUST2");
 	}
 
-//	
 	@Test
 	public void getterNameTest() throws NoSuchFieldException, IllegalAccessException {
 		// given
@@ -218,11 +217,11 @@ public class AuthTests {
 		// given
 		AppUser pojo = new AppUser();
 		// when
-		pojo.setPassword("nagarjun");
+		pojo.setPassword("cust");
 		// then
 		java.lang.reflect.Field field = pojo.getClass().getDeclaredField("password");
 		field.setAccessible(true);
-		assertEquals("Fields didn't match", field.get(pojo), "nagarjun");
+		assertEquals("Fields didn't match", field.get(pojo), "cust");
 	}
 
 	@Test
