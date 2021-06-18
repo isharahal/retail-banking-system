@@ -9,13 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppUserTest {
 
-	AppUser app = new AppUser("1", "naga", "abc", "a", "user");
 	AppUser pojo = new AppUser();
 
-	//
-
 	@Test
-	public void getterPassTestNeg() throws NoSuchFieldException, IllegalAccessException {
+	public void getPassTest() throws NoSuchFieldException, IllegalAccessException {
 		// given
 		AppUser pojo = new AppUser();
 		java.lang.reflect.Field field = pojo.getClass().getDeclaredField("password");
@@ -28,7 +25,7 @@ class AppUserTest {
 	}
 
 	@Test
-	public void setterIdTestNeg() throws NoSuchFieldException, IllegalAccessException {
+	public void setIdTest() throws NoSuchFieldException, IllegalAccessException {
 		// given
 		AppUser pojo = new AppUser();
 		// when
@@ -40,7 +37,7 @@ class AppUserTest {
 	}
 
 	@Test
-	public void getterIdNeg() throws NoSuchFieldException, IllegalAccessException {
+	public void getIdTestNeg() throws NoSuchFieldException, IllegalAccessException {
 		// given
 		AppUser pojo = new AppUser();
 		java.lang.reflect.Field field = pojo.getClass().getDeclaredField("userid");
@@ -65,25 +62,25 @@ class AppUserTest {
 	}
 
 	@Test
-	void set() {
-		pojo.setRole("abc");
-		assertEquals("abc", pojo.getRole());
+	void setRoleTest() {
+		pojo.setRole("CUSTOMER");
+		assertEquals("CUSTOMER", pojo.getRole());
 	}
 
 	@Test
-	void getAccounTest() {
+	void getRoleTest() {
 		pojo.setRole("abc");
 		assertTrue(pojo.getRole() == "abc");
 	}
 
 	@Test
-	void setname() {
+	void setUserName() {
 		pojo.setUsername("abc");
 		assertEquals("abc", pojo.getUsername());
 	}
 
 	@Test
-	void getAccounname() {
+	void getUserName() {
 		pojo.setUsername("abc");
 		assertTrue(pojo.getUsername() == "abc");
 	}
@@ -106,8 +103,8 @@ class AppUserTest {
 
 	@Test
 	void setNameTest() {
-		response.setName("Pratik B");
-		assertEquals("Pratik B", response.getName());
+		response.setName("Dave");
+		assertEquals("Dave", response.getName());
 	}
 
 	@Test
@@ -117,7 +114,7 @@ class AppUserTest {
 	}
 
 	@Test
-	void setisValidTest() {
+	void setIsValidTest() {
 		response.setValid(true);
 		assertEquals(true, response.isValid());
 	}
